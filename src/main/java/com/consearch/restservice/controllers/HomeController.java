@@ -13,16 +13,17 @@ import java.util.Set;
 
 @RestController
 public class HomeController {
+    ElasticacheClient elasticacheClient = new ElasticacheClient();
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value = "/listTopArtists", produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<String> get() throws Exception {
-        return ElasticacheClient.getTopArtists();
+        return elasticacheClient.getTopArtists();
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value = "/home", produces = MediaType.APPLICATION_JSON_VALUE)
     public void getEventListByArtistName(@RequestParam(value = "artist_Name") String artist_Name) throws Exception {
-        ElasticacheClient.incrementOrCreateArtist(artist_Name);
+        elasticacheClient.incrementOrCreateArtist(artist_Name);
     }
 }

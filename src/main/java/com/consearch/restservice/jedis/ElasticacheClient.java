@@ -3,6 +3,7 @@ package com.consearch.restservice.jedis;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.client.AwsSyncClientParams;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.elasticache.AmazonElastiCacheClient;
@@ -10,6 +11,8 @@ import com.amazonaws.services.elasticache.model.*;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import com.amazonaws.services.elasticache.AmazonElastiCacheAsyncClientBuilder;
+import com.amazonaws.services.elasticache.AmazonElastiCacheAsync;
 import redis.clients.jedis.Tuple;
 
 import java.util.HashSet;
@@ -22,18 +25,14 @@ import java.util.Set;
  */
 public class ElasticacheClient {
 	private static String redisName = "topHits";
-	private static JedisPool pool = new JedisPool(new JedisPoolConfig(), "localhost", 6379, 10000);
-
-//    public static void execute() {
-//		/// Jedis implements Closeable. Hence, the jedis instance will be auto-closed after the last statement.
-//		try (Jedis jedis = pool.getResource()) {
-////			jedis.zadd(redisName, 1.0, "Flume");
-////
-////			jedis.zadd(redisName, 2.0, "Odesza");
-////
-////			jedis.zincrby(redisName, 3.0, "Flume");
-//		}
-//		pool.close();
+	private static JedisPool pool = new JedisPool(new JedisPoolConfig(), "https://liv-vi-e1dtqb2gb94e.epitfe.0001.use1.cache.amazonaws.com", 6379, 10000);
+//	private AWSCredentials credentials;
+//	private AmazonElastiCacheClient elastiCacheClient;
+//	private static final Regions REGION = Regions.US_EAST_1;
+//
+//	public ElasticacheClient() {
+////		credentials = getCredentials();
+//		elastiCacheClient = createElasticacheClient();
 //	}
 
 	public static void incrementOrCreateArtist(String artistId) {
@@ -50,17 +49,9 @@ public class ElasticacheClient {
 		}
 	}
 
-//	public static Set<String> getTopArtists() {
-//		try (Jedis jedis = pool.getResource()) {
-//			Set<String> ranking = jedis.zrevrangeByScore(redisName, Integer.MAX_VALUE, 0);
-//			pool.close();
-//			return ranking;
-//		}
-//	}
-
-	public static Set<String> getTopArtists(){
+	public static Set<String> getTopArtists() {
 		try (Jedis jedis = pool.getResource()) {
-			jedis.auth("root");
+			// jedis.auth("root");
 			return jedis.zrevrangeByScore(redisName, Integer.MAX_VALUE, 0);
 		} catch (Exception e) {
 			pool.close();
@@ -69,16 +60,26 @@ public class ElasticacheClient {
 		}
 	}
 
+//	private static AWSCredentials getCredentials() {
+//        try {
+//			AWSCredentials credentials = new ProfileCredentialsProvider("default").getCredentials();
+//            System.out.println("Went thru credentials.");
+//            return credentials;
+//        } catch (Exception e) {
+//            System.out.println("Got exception..........");
+//            throw new AmazonClientException("Cannot load the credentials from the credential profiles file. "
+//                    + "Please make sure that your credentials file is at the correct "
+//                    + "location (/Users/USERNAME/.aws/credentials), and is in valid format.", e);
+//        }
+//	}
 
-
-
-
-
-
-
-
-
-//        System.out.println("Entered.");
+//	private AmazonElastiCacheClient createElasticacheClient() {
+//		AmazonElastiCacheAsync client = AmazonElastiCacheAsyncClientBuilder.standard()
+//				.withRegion(REGION)
+//				.build();
+//
+//
+//	}
 //
 //		Jedis jedisTest = new Jedis();
 //		jedisTest.set("foo", "bar");
