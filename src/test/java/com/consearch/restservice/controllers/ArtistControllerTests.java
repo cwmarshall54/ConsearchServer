@@ -48,5 +48,5 @@ public class ArtistControllerTests {
 //	 			.andDo(print()).andExpect(status().isOk())
 //	 			.andExpect(jsonPath("$.content").value("Hello, Spring Community!"));
 //	 }
-
+// kick pipeline 1
 }
